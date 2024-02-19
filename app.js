@@ -13,37 +13,45 @@ let voitures = [
         {id:3,name:"range"}
 ]
 
-app.get('/AjoutVoiture',(req,res)=>{
-    const nouvelleVoiture = req.body;
-    voitures.push(nouvelleVoiture);
+
+
+app.get('/listevoiture', (req,res) => {
+    res.status(200).json(voitures)})
+
+
+
+app.get('/listevoiture/:id', (req,res) => {
+    const id = parseInt(req.params.id)
+    const voiture = voitures.find(voiture => voiture.id === id)
+
+    if (!voitures) {
+        return res.status(404).send('Car not found');
+    }
+    res.status(200).json(voiture)
+});
+
+
+app.post('/AjoutVoiture',(req,res)=>{
+    voitures.push(req.body)
     res.send(voitures);
 });
 
-app.get('/listevoitures', (req, res) => {
-    res.json(voitures);
-});
 
 
-app.get('/Listevoitures/:id', (req, res) => {
-    const voitureId = parseInt(req.params.id);
 
-    const voiture = voitures.find(voiture => voiture.id === voitureId);
 
-    if (!voiture) {
-        res.status(404).json({ message: "Voiture not found" });
-    } else {
-        res.json(voiture);
+app.put('/MAJ/:id', (req,res) => {
+    const id = parseInt(req.params.id)
+    let voiture = voitures.find(voiture => voiture.id === id)
+    voiture.name =req.body.name;
+
+    if (voitures === -1){
+        return res.status(404).send('Car not found');
     }
-});
 
+        res.status(200).json(voitures)
 
-app.put('/voiture/update', (req,res) =>
-{
-    const update = req.body;
-    voitures.update=update;
-    res.send ( voitures);
-
-});
+})
 
 
 
@@ -58,5 +66,6 @@ app.delete('/delete/:id', (req, res) => {
         const voitureSupprimee = voitures.splice(index, 1);
         res.json(voitureSupprimee[0]);
     }
+
 });
 
